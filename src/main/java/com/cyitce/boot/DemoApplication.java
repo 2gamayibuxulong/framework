@@ -71,7 +71,7 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 
 		// 使用本项目的自定义处理类
 		APIJSONApplication.DEFAULT_APIJSON_CREATOR = new APIJSONCreator() {
-			//解析器
+			//请求解析器
 			@Override
 			public Parser<Long> createParser() {
 				return new DemoParser();
@@ -83,7 +83,7 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 				return new DemoFunctionParser();
 			}
 
-			//校验器 权限、请求参数、返回结果
+			//校验器 校验 权限、请求参数、返回结果
 			@Override
 			public Verifier<Long> createVerifier() {
 				return new DemoVerifier();
@@ -109,7 +109,7 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 
 		// UnitAuto 单元测试配置  https://github.com/TommyLemon/UnitAuto  <<<<<<<<<<<<<<<<<<<<<<<<<<<
 		// FIXME 不要开放给项目组后端之外的任何人使用 UnitAuto（强制登录鉴权）！！！如果不需要单元测试则移除相关代码或 unitauto.Log.DEBUG = false;
-		UnitAutoApp.init();
+		// UnitAutoApp.init();
 
 		// 适配 Spring 注入的类及 Context 等环境相关的类
 		final InstanceGetter ig = MethodUtil.INSTANCE_GETTER;
@@ -202,38 +202,6 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 		};
 
 		// UnitAuto 单元测试配置  https://github.com/TommyLemon/UnitAuto  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-		// 把以下需要用到的数据库驱动取消注释即可，如果这里没有可以自己新增
-		//		try { //加载驱动程序
-		//			Log.d(TAG, "尝试加载 SQLServer 驱动 <<<<<<<<<<<<<<<<<<<<< ");
-		//			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		//			Log.d(TAG, "成功加载 SQLServer 驱动！>>>>>>>>>>>>>>>>>>>>> ");
-		//		}
-		//		catch (ClassNotFoundException e) {
-		//			e.printStackTrace();
-		//			Log.e(TAG, "加载 SQLServer 驱动失败，请检查 pom.xml 中 net.sourceforge.jtds 版本是否存在以及可用 ！！！");
-		//		}
-		//		
-		//		try { //加载驱动程序
-		//			Log.d(TAG, "尝试加载 Oracle 驱动 <<<<<<<<<<<<<<<<<<<<< ");
-		//			Class.forName("oracle.jdbc.driver.OracleDriver");
-		//			Log.d(TAG, "成功加载 Oracle 驱动！>>>>>>>>>>>>>>>>>>>>> ");
-		//		}
-		//		catch (ClassNotFoundException e) {
-		//			e.printStackTrace();
-		//			Log.e(TAG, "加载 Oracle 驱动失败，请检查 pom.xml 中 com.oracle.jdbc 版本是否存在以及可用 ！！！");
-		//		}
-		//		
-		//		try { //加载驱动程序
-		//			Log.d(TAG, "尝试加载 DB2 驱动 <<<<<<<<<<<<<<<<<<<<< ");
-		//			Class.forName("com.ibm.db2.jcc.DB2Driver");
-		//			Log.d(TAG, "成功加载 DB2 驱动！>>>>>>>>>>>>>>>>>>>>> ");
-		//		}
-		//		catch (ClassNotFoundException e) {
-		//			e.printStackTrace();
-		//			Log.e(TAG, "加载 DB2 驱动失败，请检查 pom.xml 中 com.ibm.db2 版本是否存在以及可用 ！！！");
-		//		}
 	}
 
 
@@ -242,9 +210,10 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 
 		// FIXME 不要开放给项目组后端之外的任何人使用 UnitAuto（强制登录鉴权）！！！如果不需要单元测试则移除相关代码或 unitauto.Log.DEBUG = false;
 		// 上线生产环境前改为 false，可不输出 APIJSONORM 的日志 以及 SQLException 的原始(敏感)信息
-		unitauto.Log.DEBUG = Log.DEBUG = false;
+		unitauto.Log.DEBUG = Log.DEBUG = true;
 		APIJSONParser.IS_PRINT_BIG_LOG = true;
 
+		//初始化各种器
 		APIJSONApplication.init();
 	}
 

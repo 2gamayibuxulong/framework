@@ -24,31 +24,46 @@ import apijson.orm.Verifier;
 import apijson.orm.VerifierCreator;
 
 
-/**APIJSON相关创建器
+/**APIJSON 所有的 相关创建器
  * @author Lemon
  */
 public class APIJSONCreator implements ParserCreator<Long>, VerifierCreator<Long>, SQLCreator {
 
+	/**
+	 * 创建请求解析器
+	 */
 	@Override
 	public Parser<Long> createParser() {
 		return new APIJSONParser();
 	}
 
+	/**
+	 * 创建远程函数解析器
+	 */
 	@Override
 	public FunctionParser createFunctionParser() {
 		return new APIJSONFunctionParser();
 	}
 
+	/**
+	 * 创建校验器 校验 权限、请求参数、返回结果
+	 */
 	@Override
 	public Verifier<Long> createVerifier() {
 		return new APIJSONVerifier();
 	}
-	
+
+	/**
+	 * 创建SQL配置
+	 */
 	@Override
 	public SQLConfig createSQLConfig() {
 		return new APIJSONSQLConfig();
 	}
 
+	/**
+	 * 创建SQL解析
+	 */
 	@Override
 	public SQLExecutor createSQLExecutor() {
 		return new APIJSONSQLExecutor();

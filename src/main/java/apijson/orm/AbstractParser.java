@@ -1,8 +1,6 @@
 /*Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 
 This source code is licensed under the Apache License Version 2.0.*/
-
-
 package apijson.orm;
 
 import apijson.JSONRequest;
@@ -60,6 +58,8 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	public AbstractParser() {
 		this(null);
 	}
+
+
 	/**needVerify = true
 	 *  requestMethod = GET
 	 */
@@ -210,6 +210,8 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	public String getGlobleDatasource() {
 		return globleDatasource;
 	}
+
+
 	public AbstractParser<T> setGlobleDatasource(String globleDatasource) {
 		this.globleDatasource = globleDatasource;
 		return this;
@@ -336,7 +338,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	private int queryDepth;
 	private long executedSQLDuration;
 
-	/**解析请求json并获取对应结果
+	/**解析请求json  并获取对应结果
 	 * @param request
 	 * @return requestObject
 	 */
@@ -351,7 +353,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 
 		verifier = createVerifier().setVisitor(getVisitor());
 
-		if (RequestMethod.isPublicMethod(requestMethod) == false) {
+		if (!RequestMethod.isPublicMethod(requestMethod)) {
 			try {
 				if (isNeedVerifyLogin()) {
 					onVerifyLogin();
@@ -414,7 +416,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 
 			onRollback();
 		}
-
+		//增强resultObject
 		requestObject = error == null ? extendSuccessResult(requestObject, isRoot) : extendErrorResult(requestObject, error, requestMethod, getRequestURL(), isRoot);
 
 		JSONObject res = (globleFormat != null && globleFormat) && JSONResponse.isSuccess(requestObject) ? new JSONResponse(requestObject) : requestObject;

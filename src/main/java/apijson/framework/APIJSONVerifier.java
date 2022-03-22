@@ -156,12 +156,13 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 		JSONRequest accessItem = new JSONRequest();
 		accessItem.put(ACCESS_, access);
 
+		//Count 和 Page
 		JSONRequest request = new JSONRequest();
 		request.putAll(accessItem.toArray(0, 0, ACCESS_));
 
-
+		//GET 而且 {"Access[]":{"Access":{},"count":0,"page":0}}
 		JSONObject response = creator.createParser().setMethod(RequestMethod.GET).setNeedVerify(false).parseResponse(request);
-		if (JSONResponse.isSuccess(response) == false) {
+		if (!JSONResponse.isSuccess(response)) {
 			Log.e(TAG, "\n\n\n\n\n !!!! 查询权限配置异常 !!!\n" + response.getString(JSONResponse.KEY_MSG) + "\n\n\n\n\n");
 			onServerError("查询权限配置异常 !", shutdownWhenServerError);
 		}
@@ -174,11 +175,11 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 		}
 
 		Log.d(TAG, "initAccess < for ACCESS_MAP.size() = " + ACCESS_MAP.size() + " <<<<<<<<<<<<<<<<<<<<<<<<");
-
-		if (isAll) {  // 全量更新
+		// Access_MAP全量更新
+		if (isAll) {
 			ACCESS_MAP.clear();
 		}
-
+		//更新到AccessMap里面去 供以后的访问权限判定
 		JSONObject item;
 		for (int i = 0; i < size; i++) {
 			item = list.getJSONObject(i);

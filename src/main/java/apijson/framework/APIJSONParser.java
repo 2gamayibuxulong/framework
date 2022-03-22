@@ -94,7 +94,7 @@ public class APIJSONParser extends AbstractParser<Long> {
 
 	@Override
 	public JSONObject parseResponse(JSONObject request) {
-		//补充format
+		//补充format 格式化返回 Response JSON 的 key，一般是将 TableName 转为 tableName, TableName[] 转为 tableNameList, Table:alias 转为 alias, TableName-key[] 转为 tableNameKeyList 等小驼峰格式
 		if (session != null && request != null) {
 			if (request.get(FORMAT) == null) {
 				request.put(FORMAT, session.getAttribute(FORMAT));

@@ -26,16 +26,19 @@ import apijson.NotNull;
  */
 public class APIJSONApplication {
 	public static final String TAG = "APIJSONApplication";
-	
+
+	//使用mian函数的static 代码卡初始化了Creator
 	@NotNull
 	public static APIJSONCreator DEFAULT_APIJSON_CREATOR;
 
+	//父类的static静态代码块首先执行 然后再到DemoApplication
 	static {
 		DEFAULT_APIJSON_CREATOR = new APIJSONCreator();
 	}
 
 
 	/**初始化，加载所有配置并校验
+	 * 使用mian函数的static 代码卡初始化了Creator
 	 * @return 
 	 * @throws Exception
 	 */
@@ -68,10 +71,11 @@ public class APIJSONApplication {
 		System.out.println("\n\n\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<< APIJSON 开始启动 >>>>>>>>>>>>>>>>>>>>>>>>\n");
 		DEFAULT_APIJSON_CREATOR = creator;
 
-		// 统一用同一个 creator
-		APIJSONSQLConfig.APIJSON_CREATOR = creator;
+		// 统一用同一个 刚刚创建好的 creator
 		APIJSONParser.APIJSON_CREATOR = creator;
 		APIJSONController.APIJSON_CREATOR = creator;
+		APIJSONSQLConfig.APIJSON_CREATOR = creator;
+
 
 
 		System.out.println("\n\n\n开始初始化: 权限校验配置 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
@@ -100,9 +104,8 @@ public class APIJSONApplication {
 
 		System.out.println("开始测试: 远程函数 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 		try {
-			APIJSONFunctionParser.test();
-		}
-		catch (Throwable e) {
+//			APIJSONFunctionParser.test();
+		} catch (Throwable e) {
 			e.printStackTrace();
 			if (shutdownWhenServerError) {
 				onServerError("远程函数配置 测试失败！", shutdownWhenServerError);
@@ -115,8 +118,7 @@ public class APIJSONApplication {
 		System.out.println("\n\n\n开始初始化: 请求结构校验配置 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 		try {
 			APIJSONVerifier.initRequest(shutdownWhenServerError, creator);
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			if (shutdownWhenServerError) {
 				onServerError("请求结构校验配置 初始化失败！", shutdownWhenServerError);
@@ -127,15 +129,13 @@ public class APIJSONApplication {
 		System.out.println("\n\n\n开始测试: Request 和 Response 的数据结构校验 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 		try {
 			APIJSONVerifier.testStructure();
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			if (shutdownWhenServerError) {
 				onServerError("Request 和 Response 的数据结构校验 测试失败！", shutdownWhenServerError);
 			}
 		}
 		System.out.println("\n完成测试: Request 和 Response 的数据结构校验 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
 
 		System.out.println("\n\n<<<<<<<<<<<<<<<<<<<<<<<<< APIJSON 启动完成，试试调用自动化 API 吧 ^_^ >>>>>>>>>>>>>>>>>>>>>>>>\n");
 	}

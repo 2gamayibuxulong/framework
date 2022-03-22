@@ -188,7 +188,7 @@ public class APIJSONFunctionParser extends AbstractFunctionParser {
 					.setVersion(item.getIntValue(JSONRequest.KEY_VERSION))
 					.parseResponse(demo);
 
-			if (JSONResponse.isSuccess(r) == false) {
+			if (!JSONResponse.isSuccess(r)) {
 				onServerError(JSONResponse.getMsg(r), shutdownWhenServerError);
 			}
 

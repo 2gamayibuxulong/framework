@@ -66,6 +66,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 	// <User, <GET, [OWNER, ADMIN]>>
 	@NotNull
 	public static final Map<String, Map<RequestMethod, String[]>> SYSTEM_ACCESS_MAP;
+	//保存所有访问模式的Map
 	@NotNull
 	public static final Map<String, Map<RequestMethod, String[]>> ACCESS_MAP;
 
