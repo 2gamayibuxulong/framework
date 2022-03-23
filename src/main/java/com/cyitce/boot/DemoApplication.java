@@ -71,13 +71,13 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 
 		// 使用本项目的自定义处理类
 		APIJSONApplication.DEFAULT_APIJSON_CREATOR = new APIJSONCreator() {
-			//请求解析器
+			//请求解析器 将请求json解析为正确的
 			@Override
 			public Parser<Long> createParser() {
 				return new DemoParser();
 			}
 
-			//远程函数解析
+			//远程函数解析 将函数解析为正确的
 			@Override
 			public FunctionParser createFunctionParser() {
 				return new DemoFunctionParser();

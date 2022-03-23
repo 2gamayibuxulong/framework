@@ -1,0 +1,62 @@
+1.APIJSON会对请求的格式进行校验。
+2.APIJSON只有GET,HEAD请求才是明文，其它如POST都是非明文，这个和传统方式是一样的。
+3.APIJSON会对非GET、HEAD请求的请求方法、结构、内容进行严格校验。
+4.APIJSON对Table默认保护不可访问，需要服务端配置允许的请求与结构才能用指定的请求方法与结构访问。
+5.APIJSON安全性有多重机制保障，尤其写操作强制要求传id或id{}并对值校验，所以不会像直接写SQL语句那种方式发生一次性误删数据库的问题，甚至连脏数据都很难产生。
+
+因为第3点，所以自动化写操作需要传 tag 来校验结构和内容；
+因为第4点，所以某些自动化非开放请求需要传访问角色 @ role 来校验角色权限。
+
+
+
+前端可以传递角色 
+可以使用request表将前端传递的json重新整理 重新整理了角色信息
+整理过后校验 经由 access验证是否正确 角色是否正确
+生成sql 增加对应的条件
+
+
+如果是owner 就生成sql里面加上userId是自己
+Access 表就是 APIJSON 的权限中心，其中定义了对于数据库中的每张表，哪些角色（RequestRole）可以调用什么请求方法。
+
+
+登录用户拥有的角色
+	通过登录状态
+	   未登录
+	   已登录
+	通过表上的数据得出
+	   圈子成员
+	   拥有者
+	   管理员
+	对于数据库中的每张表，哪些角色（RequestRole）可以调用什么请求方法。
+	
+RBAC
+	权限比较宽
+		list 表
+		post 表
+	根据角色约束权限
+	用户对应角色
+	
+	
+	
+开放请求由前端传 @ role；
+非开放请求一般是后端 Request 表里 UPDATE 或 INSERT 进去一个 @ role。
+不传的话根据 是否登录 默认分配 LOGIN/UNKNOWN 角色
+
+到 AbstractVerifier.verify 校验时：
+UNKNOWN: 放行
+LOGIN: userId > 0
+OWNER: userId = $currentUserId
+CONTACT: userId IN( $currentContactIdList )
+CIRCLE: userId IN( $currentCircleIdList ) // currentCircleIdList = currentContactIdList.add(currentUserId)
+ADMIN: 默认不支持，后端可重写 verifyAdmin 方法来根据业务校验是否为 ADMIN 角色
+几乎都是通过在 SQL 加上 userId 的对应条件来实现的。
+
+	
+	
+1、重写认证
+
+3、重写拿取角色的逻辑
+4、重写校验逻辑
+	
+我们需要什么
+  1、从json到SQL

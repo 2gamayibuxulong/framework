@@ -16,6 +16,7 @@ package com.cyitce.boot;
 
 import apijson.RequestMethod;
 import apijson.*;
+import apijson.orm.Visitor;
 import com.cyitce.demo.*;
 import apijson.framework.APIJSONController;
 import apijson.framework.BaseModel;
@@ -583,16 +584,16 @@ public class DemoController extends APIJSONController {
 			phone = requestObject.getString(PHONE);//手机
 			password = requestObject.getString(PASSWORD);//密码
 
-			if (StringUtil.isPhone(phone) == false) {
+			if (!StringUtil.isPhone(phone)) {
 				throw new IllegalArgumentException("手机号不合法！");
 			}
 
 			if (isPassword) {
-				if (StringUtil.isPassword(password) == false) {
+				if (!StringUtil.isPassword(password)) {
 					throw new IllegalArgumentException("密码不合法！");
 				}
 			} else {
-				if (StringUtil.isVerify(password) == false) {
+				if (!StringUtil.isVerify(password)) {
 					throw new IllegalArgumentException("验证码不合法！");
 				}
 			}
@@ -617,11 +618,11 @@ public class DemoController extends APIJSONController {
 						new Privacy().setPhone(phone)
 						)
 				);
-		if (JSONResponse.isSuccess(phoneResponse) == false) {
+		if (!JSONResponse.isSuccess(phoneResponse)) {
 			return DemoParser.newResult(phoneResponse.getIntValue(JSONResponse.KEY_CODE), phoneResponse.getString(JSONResponse.KEY_MSG));
 		}
 		JSONResponse response = new JSONResponse(phoneResponse).getJSONResponse(PRIVACY_);
-		if(JSONResponse.isExist(response) == false) {
+		if(!JSONResponse.isExist(response)) {
 			return DemoParser.newErrorResult(new NotExistException("手机号未注册"));
 		}
 
@@ -633,7 +634,7 @@ public class DemoController extends APIJSONController {
 				);
 		response = new JSONResponse(privacyResponse);
 
-		Privacy privacy = response == null ? null : response.getObject(Privacy.class);
+		Privacy privacy = response.getObject(Privacy.class);
 		long userId = privacy == null ? 0 : BaseModel.value(privacy.getId());
 		if (userId <= 0) {
 			return privacyResponse;
@@ -649,11 +650,11 @@ public class DemoController extends APIJSONController {
 		} else {//verify手机验证码登录
 			response = new JSONResponse(headVerify(Verify.TYPE_LOGIN, phone, password));
 		}
-		if (JSONResponse.isSuccess(response) == false) {
+		if (!JSONResponse.isSuccess(response)) {
 			return response;
 		}
 		response = response.getJSONResponse(isPassword ? PRIVACY_ : VERIFY_);
-		if (JSONResponse.isExist(response) == false) {
+		if (!JSONResponse.isExist(response)) {
 			return DemoParser.newErrorResult(new ConditionErrorException("账号或密码错误"));
 		}
 
@@ -1679,4 +1680,9 @@ public class DemoController extends APIJSONController {
 
 	// 为 UnitAuto 提供的单元测试接口  https://github.com/TommyLemon/UnitAuto  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+
+	@Override
+	public Object login(HttpSession session, Visitor<Long> visitor, Integer version, Boolean format, JSONObject defaults) {
+		return super.login(session, visitor, version, format, defaults);
+	}
 }

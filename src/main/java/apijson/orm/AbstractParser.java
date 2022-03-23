@@ -365,7 +365,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 				return extendErrorResult(requestObject, e, requestMethod, getRequestURL(), isRoot);
 			}
 		}
-
+		//在前面添加了role
 		//必须在parseCorrectRequest后面，因为parseCorrectRequest可能会添加 @role
 		if (isNeedVerifyRole() && globleRole == null) {
 			try {

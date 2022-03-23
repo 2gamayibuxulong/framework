@@ -14,7 +14,12 @@ limitations under the License.*/
 
 package com.cyitce.demo;
 
+import apijson.RequestMethod;
 import apijson.framework.APIJSONVerifier;
+import apijson.orm.OnParseCallback;
+import apijson.orm.SQLConfig;
+import apijson.orm.SQLCreator;
+import com.alibaba.fastjson.JSONObject;
 
 
 /**安全校验器，校验请求参数、角色与权限等
@@ -30,4 +35,47 @@ public class DemoVerifier extends APIJSONVerifier {
 	//		return super.getVisitorIdKey(config);  // return "userid"; // return "uid" 等自定义的字段名
 	//	}
 
+
+	@Override
+	public JSONObject verifyRequest(RequestMethod method, String name, JSONObject target, JSONObject request, int maxUpdateCount, String database, String schema, SQLCreator creator) throws Exception {
+		return super.verifyRequest(method, name, target, request, maxUpdateCount, database, schema, creator);
+	}
+
+	@Override
+	public JSONObject verifyResponse(RequestMethod method, String name, JSONObject target, JSONObject response, String database, String schema, SQLCreator creator, OnParseCallback callback) throws Exception {
+		return super.verifyResponse(method, name, target, response, database, schema, creator, callback);
+	}
+
+	@Override
+	public void verifyAdmin() throws Exception {
+		super.verifyAdmin();
+	}
+
+	@Override
+	public void verifyRepeat(String table, String key, Object value) throws Exception {
+		super.verifyRepeat(table, key, value);
+	}
+
+	@Override
+	public void verifyRepeat(String table, String key, Object value, long exceptId) throws Exception {
+		super.verifyRepeat(table, key, value, exceptId);
+	}
+
+	/**
+	 * 权限校验
+	 */
+	@Override
+	public boolean verifyAccess(SQLConfig config) throws Exception {
+		return super.verifyAccess(config);
+	}
+
+	@Override
+	public void verifyLogin() throws Exception {
+		super.verifyLogin();
+	}
+
+	@Override
+	public void verifyRole(String table, RequestMethod method, String role) throws Exception {
+		super.verifyRole(table, method, role);
+	}
 }

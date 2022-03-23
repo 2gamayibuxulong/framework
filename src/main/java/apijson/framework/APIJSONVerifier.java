@@ -410,6 +410,7 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 			}
 			Log.d(TAG, "测试 Operation.REFUSE 校验不允许传字段：成功");
 		}
+
 		try {
 			request = JSON.parseObject("{\"Comment\":{\"userId\":0, \"momentId\":0, \"content\":\"apijson\"}}");
 			Log.d(TAG, "test  verifyRequest = " + AbstractVerifier.verifyRequest(RequestMethod.POST, "", JSON.parseObject(requestConfig), request, APIJSON_CREATOR));

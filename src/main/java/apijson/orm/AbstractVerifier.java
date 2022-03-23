@@ -66,6 +66,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 	// <User, <GET, [OWNER, ADMIN]>>
 	@NotNull
 	public static final Map<String, Map<RequestMethod, String[]>> SYSTEM_ACCESS_MAP;
+
 	//保存所有访问模式的Map
 	@NotNull
 	public static final Map<String, Map<RequestMethod, String[]>> ACCESS_MAP;
@@ -101,7 +102,6 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 
 
 		SYSTEM_ACCESS_MAP = new HashMap<String, Map<RequestMethod, String[]>>();
-
 		SYSTEM_ACCESS_MAP.put(Access.class.getSimpleName(), getAccessMap(Access.class.getAnnotation(MethodAccess.class)));
 		SYSTEM_ACCESS_MAP.put(Function.class.getSimpleName(), getAccessMap(Function.class.getAnnotation(MethodAccess.class)));
 		SYSTEM_ACCESS_MAP.put(Request.class.getSimpleName(), getAccessMap(Request.class.getAnnotation(MethodAccess.class)));
@@ -197,6 +197,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public boolean verifyAccess(SQLConfig config) throws Exception {
 		String table = config == null ? null : config.getTable();
 		if (table == null) {
@@ -208,12 +209,12 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 			role = UNKNOWN;
 		} 
 		else { 
-			if (ROLE_MAP.containsKey(role) == false) {
+			if (!ROLE_MAP.containsKey(role)) {
 				Set<String> NAMES = ROLE_MAP.keySet();
 				throw new IllegalArgumentException("角色 " + role + " 不存在！只能是[" + StringUtil.getString(NAMES.toArray()) + "]中的一种！");
 			}
 
-			if (role.equals(UNKNOWN) == false) { //未登录的角色
+			if (!role.equals(UNKNOWN)) { //未登录的角色
 				verifyLogin();
 			}
 		}
@@ -235,8 +236,8 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 		case CIRCLE:
 			//TODO 做一个缓存contactMap<visitorId, contactArray>，提高[]:{}查询性能， removeAccessInfo时map.remove(visitorId)
 			//不能在Visitor内null -> [] ! 否则会导致某些查询加上不需要的条件！
-			List<Object> list = visitor.getContactIdList() == null
-			? new ArrayList<Object>() : new ArrayList<Object>(visitor.getContactIdList());
+			List<Object> list = visitor.getContactIdList() == null ?
+					new ArrayList<Object>() : new ArrayList<Object>(visitor.getContactIdList());
 			if (CIRCLE.equals(role)) {
 				list.add(visitorId);
 			}
@@ -260,10 +261,10 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 					if (id == null) {
 						continue;
 					}
-					if (id instanceof Number == false) {//不能准确地判断Long，可能是Integer
+					if (!(id instanceof Number)) {//不能准确地判断Long，可能是Integer
 						throw new UnsupportedDataTypeException(table + ".id类型错误，id类型必须是Long！");
 					}
-					if (list.contains(Long.valueOf("" + id)) == false) {//Integer等转为Long才能正确判断。强转崩溃
+					if (!list.contains(Long.valueOf("" + id))) {//Integer等转为Long才能正确判断。强转崩溃
 						throw new IllegalAccessException(visitorIdKey + " = " + id + " 的 " + table
 								+ " 不允许 " + role + " 用户的 " + method.name() + " 请求！");
 					}
@@ -340,6 +341,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 	 * @throws Exception 
 	 * @see {@link apijson.JSONObject#KEY_ROLE} 
 	 */
+	@Override
 	public void verifyRole(String table, RequestMethod method, String role) throws Exception {
 		Log.d(TAG, "verifyRole  table = " + table + "; method = " + method + "; role = " + role);
 		if (table != null) {
