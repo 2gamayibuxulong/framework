@@ -199,6 +199,7 @@ public class DemoFunctionParser extends APIJSONFunctionParser {
 	 * @return JSONArray 只能用JSONArray，用long[]会在SQLConfig解析崩溃
 	 * @throws Exception
 	 */
+	@Override
 	public JSONArray getIdList(@NotNull JSONObject current) {
 		return new JSONArray(new ArrayList<Object>(Arrays.asList(12, 15, 301, 82001, 82002, 38710)));
 	}
@@ -209,6 +210,7 @@ public class DemoFunctionParser extends APIJSONFunctionParser {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public Object verifyAccess(@NotNull JSONObject current) throws Exception {
 		long userId = current.getLongValue(JSONRequest.KEY_USER_ID);
 		String role = current.getString(JSONRequest.KEY_ROLE);

@@ -34,8 +34,6 @@ public class DemoVerifier extends APIJSONVerifier {
 	//	public String getVisitorIdKey(SQLConfig config) {
 	//		return super.getVisitorIdKey(config);  // return "userid"; // return "uid" 等自定义的字段名
 	//	}
-
-
 	@Override
 	public JSONObject verifyRequest(RequestMethod method, String name, JSONObject target, JSONObject request, int maxUpdateCount, String database, String schema, SQLCreator creator) throws Exception {
 		return super.verifyRequest(method, name, target, request, maxUpdateCount, database, schema, creator);

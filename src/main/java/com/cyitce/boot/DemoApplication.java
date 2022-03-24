@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  */
 @Configuration
 @SpringBootApplication
-public class DemoApplication implements ApplicationContextAware, WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
+public class DemoApplication implements ApplicationContextAware {
 	private static final String TAG = "DemoApplication";
 
 	static {
@@ -204,7 +204,6 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 		// UnitAuto 单元测试配置  https://github.com/TommyLemon/UnitAuto  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	}
 
-
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(DemoApplication.class, args);
 
@@ -217,11 +216,6 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 		APIJSONApplication.init();
 	}
 
-	// SpringBoot 2.x 自定义端口方式
-	@Override
-	public void customize(ConfigurableServletWebServerFactory server) {
-		server.setPort(8080);
-	}
 
 	// 全局 ApplicationContext 实例，方便 getBean 拿到 Spring/SpringBoot 注入的类实例
 	private static ApplicationContext APPLICATION_CONTEXT;
@@ -235,7 +229,6 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 
 
 	// 支持 APIAuto 中 JavaScript 代码跨域请求 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
@@ -250,7 +243,6 @@ public class DemoApplication implements ApplicationContextAware, WebServerFactor
 			}
 		};
 	}
-
 	// 支持 APIAuto 中 JavaScript 代码跨域请求 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 }

@@ -27,7 +27,6 @@ import apijson.NotNull;
 public class APIJSONApplication {
 	public static final String TAG = "APIJSONApplication";
 
-	//使用mian函数的static 代码卡初始化了Creator
 	@NotNull
 	public static APIJSONCreator DEFAULT_APIJSON_CREATOR;
 

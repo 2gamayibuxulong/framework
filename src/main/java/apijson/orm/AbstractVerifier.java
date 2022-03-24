@@ -284,7 +284,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 					Object oid;
 					for (List<Object> ovl : ovs) {
 						oid = ovl == null || index >= ovl.size() ? null : ovl.get(index);
-						if (oid == null || StringUtil.getString(oid).equals("" + visitorId) == false) {
+						if (oid == null || !StringUtil.getString(oid).equals("" + visitorId)) {
 							throw new IllegalAccessException(visitorIdKey + " = " + oid + " 的 " + table
 									+ " 不允许 " + role + " 用户的 " + method.name() + " 请求！");
 						}
@@ -308,7 +308,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 			}
 			else {
 				requestId = config.getWhere(visitorIdKey, true);//JSON里数值不能保证是Long，可能是Integer
-				if (requestId != null && StringUtil.getString(requestId).equals(StringUtil.getString(visitorId)) == false) {
+				if (requestId != null && !StringUtil.getString(requestId).equals(StringUtil.getString(visitorId))) {
 					throw new IllegalAccessException(visitorIdKey + " = " + requestId + " 的 " + table
 							+ " 不允许 " + role + " 用户的 " + method.name() + " 请求！");
 				}
@@ -354,7 +354,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T>, IdCallback {
 			
 			Map<RequestMethod, String[]> map = ACCESS_MAP.get(table);
 
-			if (map == null || Arrays.asList(map.get(method)).contains(role) == false) {
+			if (map == null || !Arrays.asList(map.get(method)).contains(role)) {
 				throw new IllegalAccessException(table + " 不允许 " + role + " 用户的 " + method.name() + " 请求！");
 			}
 		}

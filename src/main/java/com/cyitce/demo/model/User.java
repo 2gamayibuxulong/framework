@@ -95,6 +95,7 @@ public class User extends BaseModel implements Visitor<Long> {
 		return this;
 	}
 
+	@Override
 	public List<Long> getContactIdList() {
 		return contactIdList;
 	}

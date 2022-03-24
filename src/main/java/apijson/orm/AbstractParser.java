@@ -75,7 +75,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		setMethod(method);
 		setNeedVerify(needVerify);
 	}
-	
+
 	protected boolean isRoot = true;
 	public boolean isRoot() {
 		return isRoot;
@@ -84,7 +84,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		this.isRoot = isRoot;
 		return this;
 	}
-	
+
 
 	@NotNull
 	protected Visitor<T> visitor;
@@ -325,7 +325,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	public JSONObject parseResponse(String request) {
 		Log.d(TAG, "\n\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
 				+ requestMethod + "/parseResponse  request = \n" + request + "\n\n");
-
+		//JSON转JSONObject
 		try {
 			requestObject = parseRequest(request);
 		} catch (Exception e) {
@@ -352,7 +352,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		requestObject = request;
 
 		verifier = createVerifier().setVisitor(getVisitor());
-
+		//如果不是GET方法 和 Head方法
 		if (!RequestMethod.isPublicMethod(requestMethod)) {
 			try {
 				if (isNeedVerifyLogin()) {
@@ -365,7 +365,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 				return extendErrorResult(requestObject, e, requestMethod, getRequestURL(), isRoot);
 			}
 		}
-		//在前面添加了role
+		//在前面可能会添加role 暂存内部的@role字段到类上
 		//必须在parseCorrectRequest后面，因为parseCorrectRequest可能会添加 @role
 		if (isNeedVerifyRole() && globleRole == null) {
 			try {
@@ -375,7 +375,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 				return extendErrorResult(requestObject, e, requestMethod, getRequestURL(), isRoot);
 			}
 		}
-
+		//暂存其他属性到类上
 		try {
 			setGlobleFormat(requestObject.getBoolean(JSONRequest.KEY_FORMAT));
 			setGlobleDatabase(requestObject.getString(JSONRequest.KEY_DATABASE));
@@ -393,7 +393,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		} catch (Exception e) {
 			return extendErrorResult(requestObject, e, requestMethod, getRequestURL(), isRoot);
 		}
-
+		//原始的请求
 		final String requestString = JSON.toJSONString(request);//request传进去解析后已经变了
 
 
@@ -405,7 +405,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		try {
 			queryDepth = 0;
 			executedSQLDuration = 0;
-			
+
 			requestObject = onObjectParse(request, null, null, null, false);
 
 			onCommit();
@@ -427,7 +427,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		if (Log.DEBUG) {
 			requestObject.put("sql:generate|cache|execute|maxExecute", getSQLExecutor().getGeneratedSQLCount() + "|" + getSQLExecutor().getCachedSQLCount() + "|" + getSQLExecutor().getExecutedSQLCount() + "|" + getMaxSQLCount());
 			requestObject.put("depth:count|max", queryDepth + "|" + getMaxQueryDepth());
-			
+
 			executedSQLDuration += sqlExecutor.getExecutedSQLDuration() + sqlExecutor.getSqlResultDuration();
 			long parseDuration = duration - executedSQLDuration;
 			requestObject.put("time:start|duration|end|parse|sql", startTime + "|" + duration + "|" + endTime + "|" + parseDuration + "|" + executedSQLDuration);
@@ -492,7 +492,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	/**解析请求JSONObject
 	 * @param request => URLDecoder.decode(request, UTF_8);
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@NotNull
 	public static JSONObject parseRequest(String request) throws Exception {
@@ -565,7 +565,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 					String arrKey = key + "[]";
 
 					if (target.containsKey(arrKey) == false) {
-						target.put(arrKey, new JSONArray()); 
+						target.put(arrKey, new JSONArray());
 					}
 
 					try {
@@ -621,7 +621,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	public static JSONObject newResult(int code, String msg, boolean isRoot) {
 		return extendResult(null, code, msg, isRoot);
 	}
-	
+
 	/**添加JSONObject的状态内容，一般用于错误提示结果
 	 * @param object
 	 * @param code
@@ -639,30 +639,30 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 				+ " \n   |   \n 常见问题：https://github.com/Tencent/APIJSON/issues/36"
 				+ " \n 通用文档：https://github.com/Tencent/APIJSON/blob/master/Document.md"
 				+ " \n 视频教程：https://search.bilibili.com/all?keyword=APIJSON");
-		
+
 		msg = index >= 0 ? msg.substring(0, index) : msg;
-		
+
 		if (object == null) {
 			object = new JSONObject(true);
 		}
-		
-		if (object.containsKey(JSONResponse.KEY_OK) == false) {
+
+		if (!object.containsKey(JSONResponse.KEY_OK)) {
 			object.put(JSONResponse.KEY_OK, JSONResponse.isSuccess(code));
 		}
-		if (object.containsKey(JSONResponse.KEY_CODE) == false) {
+		if (!object.containsKey(JSONResponse.KEY_CODE)) {
 			object.put(JSONResponse.KEY_CODE, code);
 		}
 
 		String m = StringUtil.getString(object.getString(JSONResponse.KEY_MSG));
-		if (m.isEmpty() == false) {
+		if (!m.isEmpty()) {
 			msg = m + " ;\n " + StringUtil.getString(msg);
 		}
-		
+
 		object.put(JSONResponse.KEY_MSG, msg);
 		if (debug != null) {
-			object.put("debug:info|help", debug);
+//			object.put("debug:info|help", debug);
 		}
-		
+
 		return object;
 	}
 
@@ -695,11 +695,10 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	public static JSONObject newSuccessResult(boolean isRoot) {
 		return newResult(JSONResponse.CODE_SUCCESS, JSONResponse.MSG_SUCCEED, isRoot);
 	}
-	
+
 	/**添加请求成功的状态内容
 	 * @param object
 	 * @param e
-	 * @param isRoot
 	 * @return
 	 */
 	public static JSONObject extendErrorResult(JSONObject object, Exception e) {
@@ -809,7 +808,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 			int code;
 			if (e instanceof UnsupportedEncodingException) {
 				code = JSONResponse.CODE_UNSUPPORTED_ENCODING;
-			} 
+			}
 			else if (e instanceof IllegalAccessException) {
 				code = JSONResponse.CODE_ILLEGAL_ACCESS;
 			}
@@ -827,7 +826,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 			}
 			else if (e instanceof TimeoutException) {
 				code = JSONResponse.CODE_TIME_OUT;
-			} 
+			}
 			else if (e instanceof ConflictException) {
 				code = JSONResponse.CODE_CONFLICT;
 			}
@@ -858,10 +857,9 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 
 	//TODO 启动时一次性加载Request所有内容，作为初始化。
 	/**获取正确的请求，非GET请求必须是服务器指定的
-	 * @param method
-	 * @param request
+	 * 暂存Tag和Version到类上 然后移除requestObject
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public JSONObject parseCorrectRequest() throws Exception {
@@ -967,9 +965,8 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	 * @param parentPath parentObject的路径
 	 * @param name parentObject的key
 	 * @param request parentObject的value
-	 * @param config for array item
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public JSONObject onObjectParse(final JSONObject request
@@ -985,7 +982,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 
 		int type = arrayConfig == null ? 0 : arrayConfig.getType();
 		int position = arrayConfig == null ? 0 : arrayConfig.getPosition();
-
+		//拿取深度
 		String[] arr = StringUtil.split(parentPath, "/");
 		if (position == 0) {
 			int d = arr == null ? 1 : arr.length + 1;
@@ -1103,7 +1100,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	 * @param parentPath parentObject的路径
 	 * @param name parentObject的key
 	 * @param request parentObject的value
-	 * @return 
+	 * @return
 	 * @throws Exception
 	 */
 	@Override
@@ -1114,7 +1111,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 		}
 
 		//不能允许GETS，否则会被通过"[]":{"@role":"ADMIN"},"Table":{},"tag":"Table"绕过权限并能批量查询
-		if (isSubquery == false && RequestMethod.isGetMethod(requestMethod, true) == false) {
+		if (!isSubquery && !RequestMethod.isGetMethod(requestMethod, true)) {
 			throw new UnsupportedOperationException("key[]:{} 只支持 GET, GETS 方法！其它方法不允许传 " + name + ":{} 等这种 key[]:{} 格式！");
 		}
 		if (request == null || request.isEmpty()) { // jsonKey-jsonValue 条件
@@ -1192,7 +1189,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 			String[] childKeys = StringUtil.split(childPath, "-", false);
 			if (childKeys == null || childKeys.length <= 0 || request.containsKey(childKeys[0]) == false) {
 				childKeys = null;
-			} 
+			}
 			else if (childKeys.length == 1 && JSONRequest.isTableKey(childKeys[0])) {  // 可能无需提取，直接返回 rawList 即可
 				arrTableKey = childKeys[0];
 			}
@@ -1293,8 +1290,8 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 	/**多表同时筛选
 	 * @param join "&/User/id@,</User[]/User/id{}@,</[]/Comment/momentId@"
 	 * @param request
-	 * @return 
-	 * @throws Exception 
+	 * @return
+	 * @throws Exception
 	 */
 	private List<Join> onJoinParse(Object join, JSONObject request) throws Exception {
 		JSONObject joinMap = null;
@@ -1402,7 +1399,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 			//			if (StringUtil.isName(targetTable) == false) {
 			//				throw new IllegalArgumentException("/" + path + ":'/targetTable/targetKey' 中 targetTable 值 " + targetTable + " 不合法！必须满足大写字母开头的表对象英文单词 key 格式！");
 			//			}
-			//			
+			//
 			//			String targetAlias = targetEntry.getValue(); //owner
 			//			if (StringUtil.isNotEmpty(targetAlias, true) && StringUtil.isName(targetAlias) == false) {
 			//				throw new IllegalArgumentException("/" + path + ":'/targetTable:targetAlias/targetKey' 中 targetAlias 值 " + targetAlias + " 不合法！必须满足英文单词变量名格式！");
@@ -1658,7 +1655,7 @@ public abstract class AbstractParser<T> implements Parser<T>, ParserCreator<T>, 
 					pos = ps[i+1].contains("/") == false ? ps[i+1]
 							: ps[i+1].substring(0, ps[i+1].indexOf("/"));
 					if (
-							//StringUtil.isNumer(pos) && 
+							//StringUtil.isNumer(pos) &&
 							vs[i+1].startsWith(pos + "/") == false) {
 						vs[i+1] = pos + "/" + vs[i+1];
 					}

@@ -72,7 +72,7 @@ public class APIJSONController {
 	public String getRequestURL() {
 		return null;
 	}
-
+	//设定Session 和 RequestURL
 	public Parser<Long> newParser(HttpSession session, RequestMethod method) {
 		Parser<Long> parser = APIJSON_CREATOR.createParser();
 		parser.setMethod(method);

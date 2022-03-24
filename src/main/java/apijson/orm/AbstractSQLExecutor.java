@@ -181,7 +181,7 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 		final int position = config.getPosition();
 		JSONObject result;
 
-		if (isExplain == false) {
+		if (!isExplain) {
 			generatedSQLCount ++;
 		}
 
@@ -200,14 +200,14 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 
 		try {
 			if (unknowType) {
-				if (isExplain == false) { //只有 SELECT 才能 EXPLAIN
+				if (!isExplain) { //只有 SELECT 才能 EXPLAIN
 					executedSQLCount ++;
 					executedSQLStartTime = System.currentTimeMillis();
 				}
 				Statement statement = getStatement(config);
 				rs = execute(statement, sql);
 				int updateCount = statement.getUpdateCount();
-				if (isExplain == false) {
+				if (!isExplain) {
 					executedSQLEndTime = System.currentTimeMillis();
 					executedSQLDuration += executedSQLEndTime - executedSQLStartTime;
 				}
@@ -222,12 +222,12 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 				case POST:
 				case PUT:
 				case DELETE:
-					if (isExplain == false) { //只有 SELECT 才能 EXPLAIN
+					if (!isExplain) { //只有 SELECT 才能 EXPLAIN
 						executedSQLCount ++;
 						executedSQLStartTime = System.currentTimeMillis();
 					}
 					int updateCount = executeUpdate(config);
-					if (isExplain == false) {
+					if (!isExplain) {
 						executedSQLEndTime = System.currentTimeMillis();
 						executedSQLDuration += executedSQLEndTime - executedSQLStartTime;
 					}
@@ -454,7 +454,7 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 								sqlTable = sqlTable.substring(1, sqlTable.length() - 1);
 							}
 							
-							if (StringUtil.equalsIgnoreCase(sqlTable, lastTableName) == false || StringUtil.equals(sqlAlias, lastAliasName) == false) {
+							if (!StringUtil.equalsIgnoreCase(sqlTable, lastTableName) || !StringUtil.equals(sqlAlias, lastAliasName)) {
 								lastTableName = sqlTable;
 								lastAliasName = sqlAlias;
 								lastViceColumnStart = i;
@@ -569,7 +569,7 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 			return result;
 		}
 
-		if (isHead == false) {
+		if (!isHead) {
 			// @ APP JOIN 查询副表并缓存到 childMap <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 			executeAppJoin(config, resultList, childMap);
@@ -948,7 +948,7 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 		
 		List<Object> valueList = config.isPrepared() ? config.getPreparedValueList() : null;
 
-		if (valueList != null && valueList.isEmpty() == false) {
+		if (valueList != null && !valueList.isEmpty()) {
 			for (int i = 0; i < valueList.size(); i++) {
 				statement = setArgument(config, statement, i, valueList.get(i));
 			}
@@ -1062,16 +1062,14 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 
 		Collection<Connection> connections = connectionMap.values();
 
-		if (connections != null) {
-			for (Connection connection : connections) {
-				try {
-					if (connection != null && connection.isClosed() == false) {
-						connection.close();
-					}
+		for (Connection connection : connections) {
+			try {
+				if (connection != null && !connection.isClosed()) {
+					connection.close();
 				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 

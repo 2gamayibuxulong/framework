@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
  */
 public class Log {
 
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	
 	public static final String VERSION = "4.9.0";
 	public static final String KEY_SYSTEM_INFO_DIVIDER = "---|-----APIJSON SYSTEM INFO-----|---";

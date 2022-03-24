@@ -47,8 +47,7 @@ public class APIJSONParser extends AbstractParser<Long> {
 	static {
 		APIJSON_CREATOR = new APIJSONCreator();
 	}
-	
-	
+
 	public APIJSONParser() {
 		super();
 	}
@@ -82,7 +81,7 @@ public class APIJSONParser extends AbstractParser<Long> {
 	public Verifier<Long> createVerifier() {
 		return APIJSON_CREATOR.createVerifier();
 	}
-	
+
 	@Override
 	public SQLConfig createSQLConfig() {
 		return APIJSON_CREATOR.createSQLConfig();
@@ -91,7 +90,6 @@ public class APIJSONParser extends AbstractParser<Long> {
 	public SQLExecutor createSQLExecutor() {
 		return APIJSON_CREATOR.createSQLExecutor();
 	}
-
 
 	@Override
 	public JSONObject parseResponse(JSONObject request) {
@@ -117,9 +115,6 @@ public class APIJSONParser extends AbstractParser<Long> {
 	}
 
 	private FunctionParser functionParser;
-	public FunctionParser getFunctionParser() {
-		return functionParser;
-	}
 	@Override
 	public Object onFunctionParse(String key, String function, String parentPath, String currentName, JSONObject currentObject) throws Exception {
 		if (functionParser == null) {
@@ -140,8 +135,6 @@ public class APIJSONParser extends AbstractParser<Long> {
 		
 		return functionParser.invoke(function, currentObject);
 	}
-
-
 	@Override
 	public APIJSONObjectParser createObjectParser(JSONObject request, String parentPath, SQLConfig arrayConfig
 			, boolean isSubquery, boolean isTable, boolean isArrayMainTable) throws Exception {
@@ -166,9 +159,6 @@ public class APIJSONParser extends AbstractParser<Long> {
 
 		}.setMethod(getMethod()).setParser(this);
 	}
-
-
-
 	@Override
 	public void onVerifyContent() throws Exception {
 		//补充全局缺省版本号  //可能在默认为1的前提下这个请求version就需要为0  requestObject.getIntValue(VERSION) <= 0) {
@@ -178,13 +168,6 @@ public class APIJSONParser extends AbstractParser<Long> {
 		}
 		super.onVerifyContent();
 	}
-
-
-	//	//可重写来设置最大查询数量
-	//	@Override
-	//	public int getMaxQueryCount() {
-	//		return 50;
-	//	}
 	
 
 }

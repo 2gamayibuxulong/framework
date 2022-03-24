@@ -170,7 +170,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 	 */
 	@Override
 	public AbstractObjectParser parse(String name, boolean isReuse) throws Exception {
-		if (isInvalidate() == false) {
+		if (!isInvalidate()) {
 			this.isReuse = isReuse;
 			this.name = name;
 			this.path = AbstractParser.getAbsPath(parentPath, name);
@@ -188,7 +188,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 			response = new JSONObject(true);//must init
 			sqlReponse = null;//must init
 
-			if (isReuse == false) {
+			if (!isReuse) {
 				sqlRequest = new JSONObject(true);//must init
 
 				customMap = null;//must init
@@ -196,7 +196,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 				childMap = null;//must init
 
 				Set<Entry<String, Object>> set = request.isEmpty() ? null : new LinkedHashSet<Entry<String, Object>>(request.entrySet());
-				if (set != null && set.isEmpty() == false) {//判断换取少几个变量的初始化是否值得？
+				if (set != null && !set.isEmpty()) {//判断换取少几个变量的初始化是否值得？
 					if (isTable) {//非Table下必须保证原有顺序！否则 count,page 会丢, total@:"/[]/total" 会在[]:{}前执行！
 						customMap = new LinkedHashMap<String, Object>();
 						childMap = new LinkedHashMap<String, JSONObject>();
@@ -242,7 +242,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 
 						try {
 							if (key.startsWith("@") || key.endsWith("@")) {
-								if (onParse(key, value) == false) {
+								if (!onParse(key, value)) {
 									invalidate();
 								}
 							}
